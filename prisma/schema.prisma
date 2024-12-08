@@ -1,0 +1,74 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// enum Type {
+//   INCOME
+//   OUTCOME
+// }
+
+// model Transaksi {
+//   id          Int      @id @default(autoincrement())
+//   amount      Int    @default(0)
+//   description String   @default("") @db.Text
+//   type        Type     @default(INCOME)
+//   createdAt   DateTime @default(now())
+//   updatedAt   DateTime @updatedAt
+
+// }
+
+enum Role {
+  PENGELOLA
+  MURID
+}
+
+
+model User {
+  id        Int      @id @default(autoincrement())
+  uuid      String   @unique @default("")
+  username  String   @default("")
+  email     String   @unique @default("")
+  password  String   @default("")
+  role      Role     @default(MURID)
+  pinjam    Pinjam[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Barang {
+  id        Int      @id @default(autoincrement())
+  uuid      String   @unique @default("")
+  name      String   @default("")
+  category  String   @default("")
+  location  String   @default("")
+  quantity  Int      @default(0)
+  pinjam    Pinjam[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Pinjam {
+  id          Int      @id @default(autoincrement())
+  // uuid        String   @unique @default("")
+  idUser      Int      @default(0)
+  idBarang    Int      @default(0)
+  quantity    Int      @default(0)
+  borrow_date DateTime @default(now())
+  return_date DateTime?
+  isReturned  Boolean  @default(false)
+
+  User User[]
+  
+  Barang Barang[]
+}
